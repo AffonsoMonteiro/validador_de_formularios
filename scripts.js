@@ -5,13 +5,17 @@ let b7validator = {
         let send = true
 
         let inputs = form.querySelectorAll('input')
+
+        b7validator.clearErrors()
+
+
         for(let i = 0; i < inputs.length; i++) {
             let input = inputs[i]
             let check = b7validator.checkInput(input)
             if(check !== true) {
                 send = false
                 // exibir o erro
-                console.log(check)
+                b7validator.showError(input, check)
             }
         }
         
@@ -33,14 +37,49 @@ let b7validator = {
                     break
 
                     case 'min':
+                        if(input.value.length < rDetails[1]) {
+                            return `Campo tem que ter pelo menos ${rDetails[1]} caractes`
+                        }
+                    break
 
+                    case 'email':
+                        if(input.value != '') {
+                            
+                            let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+                            if(!regex.test(input.value.toLowerCase())) {
+                                return 'E-mail digitado não é válido'
+                            }
+                            
+                        }
                     break
                 }
             }
         }
 
         return true
-    }
+    },
+     showError:(input, error) => {
+        input.style.borderColor = '#ff0000';
+
+        let errorElement = document.createElement('div')
+        errorElement.classList.add('error')
+        errorElement.innerHTML = error
+
+        input.parentElement.insertBefore(errorElement, input.ElementSibling)
+     },
+
+     clearErrors:() => {
+        let inputs = form.querySelectorAll('input')
+        for(let i = 0; i < inputs.length; i++) {
+            inputs[i].style = ''
+        }
+
+         let errorElement = document.querySelectorAll('.error')
+         for( let i = 0; i < errorElement.length; i++) {
+             errorElement[i].remove()
+         }
+     }
 }
 
 
